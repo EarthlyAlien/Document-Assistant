@@ -20,7 +20,7 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=[
-        "langchain==0.0.267",
+        "langchain==0.2.5",
         "langchain-openai==0.0.2",
         "openai==1.3.5",
         "faiss-cpu==1.7.4",
