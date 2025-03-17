@@ -2,7 +2,7 @@ import os
 import pytest
 import tempfile
 from unittest.mock import patch, MagicMock
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import numpy as np
 from langchain.schema import Document, AIMessage
 
@@ -13,7 +13,7 @@ from rag import RAG
 class MockDocument(Document):
     """Mock LangChain document for testing."""
     
-    def __init__(self, page_content: str, metadata: Dict[str, Any] | None = None):
+    def __init__(self, page_content: str, metadata: Optional[Dict[str, Any]] = None):
         super().__init__(page_content=page_content, metadata=metadata or {})
 
 
