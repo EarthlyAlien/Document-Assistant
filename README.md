@@ -31,8 +31,8 @@ AI/ML Engineer | Python Developer | Data Scientist
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd document-assistant
+git clone https://github.com/EarthlyAlien/Document-Assistant/
+cd Document-Assistant
 ```
 
 2. Create a virtual environment:
