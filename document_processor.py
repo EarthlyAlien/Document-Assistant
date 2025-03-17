@@ -1,7 +1,8 @@
 import os
-from typing import List, Dict, Any
+from typing import List
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.schema import Document
 
 class DocumentProcessor:
     """Handles document loading and chunking."""
@@ -22,7 +23,7 @@ class DocumentProcessor:
             length_function=len,
         )
         
-    def load_pdf(self, file_path: str) -> List[Dict[str, Any]]:
+    def load_pdf(self, file_path: str) -> List[Document]:
         """
         Load a PDF document and split it into chunks.
         
@@ -48,7 +49,7 @@ class DocumentProcessor:
         except Exception as e:
             raise Exception(f"Error loading PDF: {str(e)}")
     
-    def chunk_documents(self, documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def chunk_documents(self, documents: List[Document]) -> List[Document]:
         """
         Split documents into smaller chunks.
         
@@ -60,7 +61,7 @@ class DocumentProcessor:
         """
         return self.text_splitter.split_documents(documents)
     
-    def process_document(self, file_path: str) -> List[Dict[str, Any]]:
+    def process_document(self, file_path: str) -> List[Document]:
         """
         Process a document: load and chunk it.
         

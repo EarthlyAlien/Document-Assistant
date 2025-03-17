@@ -1,24 +1,25 @@
 import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Union, cast
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage, SystemMessage
+from langchain.schema import HumanMessage, SystemMessage, AIMessage, BaseMessage
+from langchain.schema import Document
 
 load_dotenv()
 
 class RAG:
     """Retrieval Augmented Generation for question answering."""
     
-    def __init__(self, vector_store, model_name: str = "gpt-3.5-turbo"):
+    def __init__(self, vector_store, temperature: float = 0.7):
         """
         Initialize the RAG system.
         
         Args:
             vector_store: Vector store instance
-            model_name: OpenAI model name
+            temperature: Model temperature for response generation
         """
         self.vector_store = vector_store
-        self.model = ChatOpenAI(model_name=model_name)
+        self.model = ChatOpenAI(temperature=temperature)
         
     def generate_answer(self, query: str, k: int = 4) -> str:
         """
@@ -49,6 +50,8 @@ class RAG:
         # Generate response
         try:
             response = self.model.invoke(messages)
-            return response.content
+            if isinstance(response, BaseMessage):
+                return str(response.content)
+            return str(response)
         except Exception as e:
             return f"Error generating response: {str(e)}" 

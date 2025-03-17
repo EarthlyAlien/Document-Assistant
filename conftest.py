@@ -2,23 +2,23 @@ import os
 import pytest
 import tempfile
 from unittest.mock import patch, MagicMock
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import numpy as np
+from langchain.schema import Document, AIMessage
 
 from document_processor import DocumentProcessor
 from vector_store import VectorStore
 from rag import RAG
 
-class MockDocument:
+class MockDocument(Document):
     """Mock LangChain document for testing."""
     
-    def __init__(self, page_content: str, metadata: Dict[str, Any] = None):
-        self.page_content = page_content
-        self.metadata = metadata or {}
+    def __init__(self, page_content: str, metadata: Optional[Dict[str, Any]] = None):
+        super().__init__(page_content=page_content, metadata=metadata or {})
 
 
 @pytest.fixture
-def sample_documents() -> List[MockDocument]:
+def sample_documents() -> List[Document]:
     """Create sample documents for testing."""
     return [
         MockDocument(
@@ -55,7 +55,7 @@ def mock_pdf_file():
 
 
 @pytest.fixture
-def document_processor():
+def document_processor() -> DocumentProcessor:
     """Create a DocumentProcessor instance for testing."""
     return DocumentProcessor(chunk_size=100, chunk_overlap=20)
 
@@ -77,7 +77,7 @@ def mock_sentence_transformer():
 
 
 @pytest.fixture
-def vector_store(mock_sentence_transformer):
+def vector_store(mock_sentence_transformer) -> VectorStore:
     """Create a VectorStore instance with mocked embeddings for testing."""
     return VectorStore()
 
@@ -89,8 +89,7 @@ def mock_openai():
         # Configure the mock response
         instance = MagicMock()
         
-        response = MagicMock()
-        response.content = "This is a mock response from the language model."
+        response = AIMessage(content="This is a mock response from the language model.")
         
         instance.invoke = MagicMock(return_value=response)
         mock.return_value = instance
@@ -98,6 +97,6 @@ def mock_openai():
 
 
 @pytest.fixture
-def rag_instance(vector_store, mock_openai):
+def rag_instance(vector_store, mock_openai) -> RAG:
     """Create a RAG instance with a mocked vector store and language model."""
     return RAG(vector_store) 

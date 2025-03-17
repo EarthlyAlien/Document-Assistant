@@ -1,7 +1,8 @@
 import os
 import faiss
 import numpy as np
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Optional
+from langchain.schema import Document
 from sentence_transformers import SentenceTransformer
 
 class VectorStore:
@@ -18,11 +19,11 @@ class VectorStore:
             self.model = SentenceTransformer(model_name)
             self.dimension = self.model.get_sentence_embedding_dimension()
             self.index = faiss.IndexFlatL2(self.dimension)
-            self.documents = []
+            self.documents: List[Document] = []
         except Exception as e:
             raise Exception(f"Error initializing vector store: {str(e)}")
         
-    def add_documents(self, documents: List[Dict[str, Any]]) -> None:
+    def add_documents(self, documents: List[Document]) -> None:
         """
         Add documents to the vector store.
         
@@ -45,7 +46,7 @@ class VectorStore:
         except Exception as e:
             raise Exception(f"Error adding documents: {str(e)}")
     
-    def similarity_search(self, query: str, k: int = 4) -> List[Dict[str, Any]]:
+    def similarity_search(self, query: str, k: int = 4) -> List[Document]:
         """
         Perform a similarity search for the query.
         
