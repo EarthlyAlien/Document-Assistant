@@ -51,7 +51,7 @@ class RAG:
         try:
             response = self.model.invoke(messages)
             if isinstance(response, BaseMessage):
-                return str(response.content)
-            return str(response)
+                return cast(str, response.content)
+            return cast(str, response)
         except Exception as e:
             return f"Error generating response: {str(e)}" 

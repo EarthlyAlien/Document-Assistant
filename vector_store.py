@@ -1,7 +1,7 @@
 import os
 import faiss
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, cast
 from langchain.schema import Document
 from sentence_transformers import SentenceTransformer
 
@@ -34,7 +34,7 @@ class VectorStore:
             return
             
         try:
-            texts = [doc.page_content for doc in documents]
+            texts = [doc.page_content for doc in documents if isinstance(doc, Document)]
             embeddings = self.model.encode(texts)
             
             # Add documents to the store
@@ -68,7 +68,7 @@ class VectorStore:
             D, I = self.index.search(np.array(query_embedding).astype('float32'), k)
             
             # Return the top k documents
-            results = []
+            results: List[Document] = []
             for idx in I[0]:
                 if idx < len(self.documents):
                     results.append(self.documents[idx])

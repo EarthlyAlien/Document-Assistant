@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, cast
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
@@ -72,5 +72,4 @@ class DocumentProcessor:
             List of processed document chunks
         """
         documents = self.load_pdf(file_path)
-        chunks = self.chunk_documents(documents)
-        return chunks 
+        return self.chunk_documents(documents) 

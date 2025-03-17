@@ -13,7 +13,7 @@ from rag import RAG
 class MockDocument(Document):
     """Mock LangChain document for testing."""
     
-    def __init__(self, page_content: str, metadata: Optional[Dict[str, Any]] = None):
+    def __init__(self, page_content: str, metadata: Dict[str, Any] | None = None):
         super().__init__(page_content=page_content, metadata=metadata or {})
 
 
