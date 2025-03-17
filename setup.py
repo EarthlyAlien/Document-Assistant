@@ -27,7 +27,7 @@ setup(
         "sentence-transformers==2.2.2",
         "numpy==1.24.3",
         "python-dotenv==1.0.0",
-        "pypdf==3.15.1",
+        "pypdf==3.17.0",
         "streamlit==1.24.0",
     ],
 ) 
