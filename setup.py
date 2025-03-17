@@ -28,6 +28,6 @@ setup(
         "numpy==1.24.3",
         "python-dotenv==1.0.0",
         "pypdf==3.15.1",
-        "streamlit==1.24.0",
+        "streamlit==1.37.0",
     ],
 ) 
