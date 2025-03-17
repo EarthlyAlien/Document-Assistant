@@ -55,4 +55,10 @@ htmlcov/
 
 # OS specific
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# PDF files
+*.pdf
+
+# Logs
+*.log 

@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict, Any
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 class DocumentProcessor:
@@ -36,14 +36,17 @@ class DocumentProcessor:
             raise FileNotFoundError(f"File not found: {file_path}")
             
         loader = PyPDFLoader(file_path)
-        documents = loader.load()
-        
-        # Add filename to metadata
-        filename = os.path.basename(file_path)
-        for doc in documents:
-            doc.metadata["source"] = filename
+        try:
+            documents = loader.load()
             
-        return documents
+            # Add filename to metadata
+            filename = os.path.basename(file_path)
+            for doc in documents:
+                doc.metadata["source"] = filename
+                
+            return documents
+        except Exception as e:
+            raise Exception(f"Error loading PDF: {str(e)}")
     
     def chunk_documents(self, documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """

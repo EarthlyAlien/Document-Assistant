@@ -94,10 +94,19 @@ class TestApp:
         # Verify temp file was cleaned up
         mock_unlink.assert_called_once_with(mock_file.name)
     
-    def test_clear_documents(self, mock_streamlit):
+    @patch('app.RAG')
+    def test_clear_documents(self, mock_rag_class, mock_streamlit):
         """Test the clear_documents function."""
         # Setup initial state
         mock_streamlit['session_state'].uploaded_files = [{"name": "test.pdf"}]
+        mock_vector_store = MagicMock()
+        mock_rag = MagicMock()
+        mock_streamlit['session_state'].vector_store = mock_vector_store
+        mock_streamlit['session_state'].rag = mock_rag
+        
+        # Setup mock RAG class
+        mock_rag_instance = MagicMock()
+        mock_rag_class.return_value = mock_rag_instance
         
         # Clear documents
         app.clear_documents()
@@ -106,8 +115,8 @@ class TestApp:
         assert mock_streamlit['session_state'].uploaded_files == []
         
         # Verify new instances were created
-        assert isinstance(mock_streamlit['session_state'].vector_store, MagicMock)
-        assert isinstance(mock_streamlit['session_state'].rag, MagicMock)
+        assert mock_streamlit['session_state'].vector_store != mock_vector_store
+        assert mock_streamlit['session_state'].rag != mock_rag
         
         # Verify RAG was initialized with the vector store
-        app.RAG.assert_called_once_with(mock_streamlit['session_state'].vector_store) 
+        mock_rag_class.assert_called_once_with(mock_streamlit['session_state'].vector_store) 

@@ -14,7 +14,7 @@ class TestDocumentProcessor:
         assert processor.chunk_overlap == 50
         assert processor.text_splitter is not None
     
-    @patch('langchain.document_loaders.PyPDFLoader')
+    @patch('document_processor.PyPDFLoader')
     def test_load_pdf(self, mock_loader, mock_pdf_file):
         """Test loading a PDF file."""
         # Setup mock
@@ -32,15 +32,15 @@ class TestDocumentProcessor:
         processor = DocumentProcessor()
         docs = processor.load_pdf(mock_pdf_file)
         
-        # Assertions
+        # Verify loader was created and used
         mock_loader.assert_called_once_with(mock_pdf_file)
         mock_instance.load.assert_called_once()
-        assert len(docs) == 2
         
-        # Check if filename was added to metadata
-        filename = os.path.basename(mock_pdf_file)
-        assert docs[0].metadata["source"] == filename
-        assert docs[1].metadata["source"] == filename
+        # Verify metadata was updated
+        assert len(docs) == 2
+        for doc in docs:
+            assert "source" in doc.metadata
+            assert doc.metadata["source"] == os.path.basename(mock_pdf_file)
     
     def test_load_pdf_file_not_found(self):
         """Test loading a non-existent PDF file."""

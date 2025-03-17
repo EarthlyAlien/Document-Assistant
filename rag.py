@@ -1,7 +1,7 @@
 import os
 from typing import List, Dict, Any
 from dotenv import load_dotenv
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 
 load_dotenv()
@@ -47,6 +47,8 @@ class RAG:
         ]
         
         # Generate response
-        response = self.model.invoke(messages)
-        
-        return response.content 
+        try:
+            response = self.model.invoke(messages)
+            return response.content
+        except Exception as e:
+            return f"Error generating response: {str(e)}" 

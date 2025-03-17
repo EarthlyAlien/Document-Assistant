@@ -1,39 +1,79 @@
 # Document Assistant
 
-A document processing system that extracts information from unstructured documents using a RAG (Retrieval Augmented Generation) architecture with chunking and FAISS vector search.
+A powerful document analysis tool that uses Retrieval Augmented Generation (RAG) to provide intelligent answers to questions about your documents.
+
+## Author
+
+**Chaitanya Vankadaru**  
+AI/ML Engineer | Python Developer | Data Scientist  
+[LinkedIn Profile](https://www.linkedin.com/in/chaitanyavankadaru)
 
 ## Features
 
-- Document upload and processing
-- Text chunking for efficient processing
-- Vector embeddings using sentence transformers
-- Semantic search with FAISS
-- RAG-based question answering on documents
+- 📄 PDF Document Processing
+- 🔍 Advanced Text Chunking
+- 🧠 Vector Embeddings with FAISS
+- 💡 Intelligent Question Answering
+- 🤖 RAG Architecture
+- 🎨 Modern, Interactive UI
 
-## Setup
+## Technology Stack
 
-1. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+- Python 3.12
+- Streamlit
+- LangChain
+- FAISS
+- Sentence Transformers
+- OpenAI GPT
+- PyPDF
 
-2. Create a `.env` file with your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   ```
+## Installation
 
-3. Run the application:
-   ```
-   streamlit run app.py
-   ```
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd document-assistant
+```
+
+2. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Set up environment variables:
+Create a `.env` file with your OpenAI API key:
+```
+OPENAI_API_KEY=your_api_key_here
+```
+
+5. Run the application:
+```bash
+streamlit run app.py
+```
+
+## Usage
+
+1. Upload a PDF document using the sidebar
+2. Adjust chunking settings if needed
+3. Process the document
+4. Ask questions about the document content
+5. View conversation history and system statistics
 
 ## Architecture
 
-This application implements a RAG (Retrieval Augmented Generation) architecture:
-- Documents are processed and chunked into manageable segments
-- Chunks are converted to vector embeddings and stored in a FAISS index
-- User queries are converted to embeddings and used to retrieve relevant document chunks
-- Retrieved context is sent to an LLM to generate accurate responses
+The application uses a Retrieval Augmented Generation (RAG) architecture:
+
+1. **Document Processing**: Documents are chunked into smaller segments
+2. **Vector Embeddings**: Chunks are converted to vector embeddings
+3. **FAISS Index**: Embeddings are stored in a FAISS vector index
+4. **Semantic Search**: User queries retrieve the most relevant chunks
+5. **Generation**: Retrieved context is sent to an LLM to generate answers
 
 ## Development
 
@@ -56,10 +96,12 @@ pytest --cov=.
 
 ## Contributing
 
-Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
+Feel free to submit issues, fork the repository, and create pull requests for any improvements.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-When using this code in your projects, attribution is required. Please include the copyright notice and permission notice in your project. 
+## Contact
+
+For any inquiries or opportunities, please reach out on [LinkedIn](https://www.linkedin.com/in/chaitanyavankadaru). 

@@ -3,6 +3,7 @@ import pytest
 import tempfile
 from unittest.mock import patch, MagicMock
 from typing import List, Dict, Any
+import numpy as np
 
 from document_processor import DocumentProcessor
 from vector_store import VectorStore
@@ -64,13 +65,14 @@ def mock_sentence_transformer():
     """Create a mock SentenceTransformer for testing."""
     with patch('sentence_transformers.SentenceTransformer', autospec=True) as mock:
         # Configure the mock
-        instance = mock.return_value
+        instance = MagicMock()
         instance.get_sentence_embedding_dimension.return_value = 384
-        instance.encode.return_value = [
+        instance.encode = MagicMock(return_value=np.array([
             [0.1] * 384,
             [0.2] * 384,
             [0.3] * 384,
-        ]
+        ]))
+        mock.return_value = instance
         yield mock
 
 
@@ -83,14 +85,15 @@ def vector_store(mock_sentence_transformer):
 @pytest.fixture
 def mock_openai():
     """Create a mock OpenAI client for testing."""
-    with patch('langchain.chat_models.ChatOpenAI', autospec=True) as mock:
+    with patch('langchain_openai.ChatOpenAI', autospec=True) as mock:
         # Configure the mock response
-        instance = mock.return_value
+        instance = MagicMock()
         
         response = MagicMock()
         response.content = "This is a mock response from the language model."
         
-        instance.invoke.return_value = response
+        instance.invoke = MagicMock(return_value=response)
+        mock.return_value = instance
         yield mock
 
 

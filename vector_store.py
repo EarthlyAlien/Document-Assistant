@@ -14,10 +14,13 @@ class VectorStore:
         Args:
             model_name: Name of the sentence transformer model to use
         """
-        self.model = SentenceTransformer(model_name)
-        self.dimension = self.model.get_sentence_embedding_dimension()
-        self.index = faiss.IndexFlatL2(self.dimension)
-        self.documents = []
+        try:
+            self.model = SentenceTransformer(model_name)
+            self.dimension = self.model.get_sentence_embedding_dimension()
+            self.index = faiss.IndexFlatL2(self.dimension)
+            self.documents = []
+        except Exception as e:
+            raise Exception(f"Error initializing vector store: {str(e)}")
         
     def add_documents(self, documents: List[Dict[str, Any]]) -> None:
         """
@@ -29,15 +32,18 @@ class VectorStore:
         if not documents:
             return
             
-        texts = [doc.page_content for doc in documents]
-        embeddings = self.model.encode(texts)
-        
-        # Add documents to the store
-        self.documents.extend(documents)
-        
-        # Add embeddings to the index
-        if len(embeddings) > 0:
-            self.index.add(np.array(embeddings).astype('float32'))
+        try:
+            texts = [doc.page_content for doc in documents]
+            embeddings = self.model.encode(texts)
+            
+            # Add documents to the store
+            self.documents.extend(documents)
+            
+            # Add embeddings to the index
+            if len(embeddings) > 0:
+                self.index.add(np.array(embeddings).astype('float32'))
+        except Exception as e:
+            raise Exception(f"Error adding documents: {str(e)}")
     
     def similarity_search(self, query: str, k: int = 4) -> List[Dict[str, Any]]:
         """
@@ -48,25 +54,26 @@ class VectorStore:
             k: Number of results to return
             
         Returns:
-            List of document chunks most similar to the query
+            List of similar documents
         """
         if not self.documents:
             return []
             
-        # Generate query embedding
-        query_embedding = self.model.encode([query])
-        
-        # Perform search
-        k = min(k, len(self.documents))  # Ensure k is not larger than the number of documents
-        if k == 0:
-            return []
+        try:
+            # Get query embedding
+            query_embedding = self.model.encode([query])
             
-        distances, indices = self.index.search(np.array(query_embedding).astype('float32'), k)
-        
-        # Get the documents corresponding to the indices
-        results = [self.documents[idx] for idx in indices[0]]
-        
-        return results
+            # Search the index
+            D, I = self.index.search(np.array(query_embedding).astype('float32'), k)
+            
+            # Return the top k documents
+            results = []
+            for idx in I[0]:
+                if idx < len(self.documents):
+                    results.append(self.documents[idx])
+            return results
+        except Exception as e:
+            raise Exception(f"Error performing similarity search: {str(e)}")
     
     def save_index(self, path: str) -> None:
         """

@@ -10,7 +10,10 @@ class TestVectorStore:
     
     def test_init(self, mock_sentence_transformer):
         """Test VectorStore initialization."""
+        # Create a new VectorStore instance
         store = VectorStore()
+        
+        # Verify SentenceTransformer was initialized correctly
         mock_sentence_transformer.assert_called_once_with("all-MiniLM-L6-v2")
         assert store.dimension == 384  # From our mocked transformer
         assert len(store.documents) == 0
@@ -23,7 +26,11 @@ class TestVectorStore:
     
     def test_add_documents(self, vector_store, sample_documents):
         """Test adding documents to the vector store."""
+        # Get initial document count
         initial_doc_count = len(vector_store.documents)
+        
+        # Mock the encode method
+        vector_store.model.encode = MagicMock(return_value=np.random.rand(3, 384).astype(np.float32))
         
         # Add documents
         vector_store.add_documents(sample_documents)
@@ -32,12 +39,7 @@ class TestVectorStore:
         assert len(vector_store.documents) == initial_doc_count + len(sample_documents)
         
         # Verify the model was used to encode the documents
-        vector_store.model.encode.assert_called_once()
-        
-        # Verify the embeddings were added to the index
-        call_args = vector_store.model.encode.call_args[0][0]
-        assert len(call_args) == len(sample_documents)
-        assert call_args[0] == sample_documents[0].page_content
+        vector_store.model.encode.assert_called_once_with([doc.page_content for doc in sample_documents])
     
     def test_similarity_search_empty(self, vector_store):
         """Test similarity search with no documents."""
@@ -56,21 +58,21 @@ class TestVectorStore:
             np.array([[0, 2, 1]])          # Indices
         )
         
+        # Mock the encode method
+        vector_store.model.encode = MagicMock(return_value=np.random.rand(1, 384).astype(np.float32))
+        
         # Perform search
         query = "test query"
         results = vector_store.similarity_search(query, k=3)
         
         # Verify query was encoded
-        vector_store.model.encode.assert_called_with([query])
+        vector_store.model.encode.assert_called_once_with([query])
         
-        # Verify search was called
-        mock_search.assert_called_once()
-        
-        # Verify results
+        # Verify search results
         assert len(results) == 3
-        assert results[0] == sample_documents[0]
-        assert results[1] == sample_documents[2]
-        assert results[2] == sample_documents[1]
+        assert results[0] == sample_documents[0]  # First result
+        assert results[1] == sample_documents[2]  # Second result
+        assert results[2] == sample_documents[1]  # Third result
     
     @patch('faiss.write_index')
     def test_save_index(self, mock_write, vector_store):
